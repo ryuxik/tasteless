@@ -147,58 +147,38 @@ def compose_hier(before: str, after: str, out: str, before_lines, after_lines,
     return out
 
 
-def hero(before_annotated: str, after: str, out: str, before_n: int,
-         surface: str, chips) -> str:
-    """A branded static hero: dark canvas, wordmark, the cited-badge BEFORE next
-    to the clean AFTER, a big N→0, and a strip of cited-rule chips."""
-    BG, INK, MUT, LINE = (11, 11, 14), (238, 240, 245), (170, 176, 189), (42, 42, 52)
+def hero(before_annotated: str, after: str, out: str, before_n: int) -> str:
+    """The launch hero, kept deliberately simple: the cited-badge BEFORE next to
+    the clean AFTER, two labels, nothing else. The image is the argument."""
+    BG, SUB, LINE = (245, 244, 240), (118, 118, 126), (220, 218, 212)
     a = Image.open(before_annotated).convert("RGB")
     b = Image.open(after).convert("RGB")
-    SH = 660
+    SH = 760
     def fit(im):
         h = im.height or 1
         return im.resize((max(1, int(im.width * SH / h)), SH))
     a, b = fit(a), fit(b)
-    pad, gap, header, footer = 64, 150, 176, 96
+    pad, gap, header, footer = 46, 34, 70, 44
     W = pad * 2 + a.width + b.width + gap
     Hc = header + SH + footer
     cv = Image.new("RGB", (W, Hc), BG)
     d = ImageDraw.Draw(cv)
-    wf, tf, lf = _font(42, bold=True), _font(22), _font(23, bold=True)
-
-    # wordmark TASTE(red)LESS + tagline
-    d.text((pad, 38), "TASTE", font=wf, fill=INK)
-    w0 = _text_size(d, "TASTE", wf)[0]
-    d.text((pad + w0, 38), "LESS", font=wf, fill=RED)
-    wm = w0 + _text_size(d, "LESS", wf)[0]
-    d.text((pad + wm + 20, 50), "It doesn't have taste. It has citations.", font=tf, fill=MUT)
-    d.text((pad, 96), f"Audited the {surface} against the laws of UX:", font=tf, fill=MUT)
+    lf, cf = _font(24, bold=True), _font(17)
 
     ax, bx = pad, pad + a.width + gap
-    d.text((ax, header - 34), "BEFORE", font=lf, fill=RED)
-    d.text((bx, header - 34), "AFTER", font=lf, fill=GREEN)
+    d.text((ax, 30), "BEFORE", font=lf, fill=RED)
+    d.text((ax + _text_size(d, "BEFORE", lf)[0] + 12, 33),
+           f"{before_n} violations of the laws of UX", font=cf, fill=SUB)
+    d.text((bx, 30), "AFTER", font=lf, fill=GREEN)
+    d.text((bx + _text_size(d, "AFTER", lf)[0] + 12, 33),
+           "0 — every fix cited", font=cf, fill=SUB)
+
     cv.paste(a, (ax, header)); cv.paste(b, (bx, header))
     d.rectangle([ax - 1, header - 1, ax + a.width, header + SH], outline=LINE)
     d.rectangle([bx - 1, header - 1, bx + b.width, header + SH], outline=LINE)
 
-    # center transformation N → 0
-    cxc = ax + a.width + gap // 2
-    nf = _font(58, bold=True)
-    midy = header + SH // 2
-    nstr, zstr = str(before_n), "0"
-    d.text((cxc - _text_size(d, nstr, nf)[0] // 2, midy - 100), nstr, font=nf, fill=RED)
-    ay = midy - 14  # drawn down-arrow (font-independent)
-    d.polygon([(cxc - 16, ay), (cxc + 16, ay), (cxc, ay + 24)], fill=INK)
-    d.text((cxc - _text_size(d, zstr, nf)[0] // 2, midy + 30), zstr, font=nf, fill=GREEN)
-
-    # cited-rule chips
-    cf = _font(16)
-    cx, cy = pad, header + SH + 30
-    for c in chips:
-        cw = _text_size(d, c, cf)[0] + 26
-        d.rounded_rectangle([cx, cy, cx + cw, cy + 36], radius=18, fill=(21, 21, 27), outline=LINE)
-        d.text((cx + 13, cy + 9), c, font=cf, fill=(143, 176, 255))
-        cx += cw + 12
+    wm = "tasteless"  # one quiet mark, bottom-right
+    d.text((W - pad - _text_size(d, wm, cf)[0], Hc - footer + 14), wm, font=cf, fill=(176, 176, 182))
     cv.save(out)
     return out
 

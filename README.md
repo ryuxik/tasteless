@@ -44,8 +44,7 @@ is a measured value against a published threshold.
 |---|---|---|---|
 | **GATE** | Text contrast | 4.5:1 / 3:1 (AA), 7:1 / 4.5:1 (AAA) | WCAG 1.4.3 / 1.4.6 |
 | **GATE** | Non-text / control contrast | 3:1 | WCAG 1.4.11 |
-| **GATE** | Target size | 24px (AA) / 44px (AAA) | WCAG 2.5.8 / 2.5.5, HIG, Material |
-| **GATE** | Target spacing | 24px hit circles don't overlap | WCAG 2.5.8 |
+| **GATE** | Target size (+ 2.5.8 spacing exception) | 24px (AA) / 44px (AAA) | WCAG 2.5.8 / 2.5.5, HIG, Material |
 | **GATE** | Line-height (body) | ≥ 1.5× | WCAG 1.4.8 |
 | **GATE** | Line length | ≤ 80, ideal ~66 chars | WCAG 1.4.8 / Bringhurst |
 | **GATE** | No justified body | ragged-right | WCAG 1.4.8 |
@@ -96,7 +95,7 @@ audit → fix → re-measure loop for you (see the skill).
 both videos, all six before/after receipts, the DINOv2 hierarchy loop, and the
 cited rules. It is itself audited by TASTELESS and passes: **0 GATE violations**.
 The demo that demos the tool survives the tool. The launch hero is a before/after
-still — `demo/artifacts/hero_landing.png` (33→0) and `hero_dashboard.png` (64→0) —
+still — `demo/artifacts/hero_landing.png` (23→0) and `hero_dashboard.png` (51→0) —
 and the loop clips are `fix_landing.mp4` and `hierarchy_clip.mp4`.
 
 `demo/` ships six deliberately-broken-but-good-looking surfaces and their fixed
@@ -106,11 +105,11 @@ the violations onto the screenshot, and writes a BEFORE→AFTER composite to
 
 | Surface | GATE violations | After |
 |---|---|---|
-| Landing page | 33 | **0** |
-| Pricing page | 38 | **0** |
-| Sign-in form | 11 | **0** |
-| Dashboard / table | 64 | **0** |
-| Settings | 15 | **0** |
+| Landing page | 23 | **0** |
+| Pricing page | 33 | **0** |
+| Sign-in form | 10 | **0** |
+| Dashboard / table | 51 | **0** |
+| Settings | 10 | **0** |
 | Checkout (clicks-to-goal) | 4 clicks | **1 click** |
 
 Each `demo/artifacts/<surface>.png` is the shareable proof: the broken UI with

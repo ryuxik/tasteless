@@ -121,7 +121,7 @@
       contrast, Fitts, line length, clicks-to-goal — and rewrites the CSS until
       every violation is gone. Each fix cited to its rule.</p>
     <div class="stats">
-      <div class="stat"><div class="n red">161</div><div class="k">violations found</div></div>
+      <div class="stat"><div class="n red">127</div><div class="k">violations found</div></div>
       <div class="stat"><div class="n green">0</div><div class="k">left after the loop</div></div>
       <div class="stat"><div class="n">6</div><div class="k">UX surfaces</div></div>
       <div class="stat"><div class="n">13</div><div class="k">cited rules</div></div>
@@ -172,23 +172,23 @@
       function out.</p>
 
     <div class="receipt"><div class="rhead"><h3>Landing page</h3>
-      <span class="delta"><span class="f">33</span> → <span class="t">0</span></span></div>
+      <span class="delta"><span class="f">23</span> → <span class="t">0</span></span></div>
       <img src="artifacts/landing.png" alt="Landing page, before and after"></div>
 
     <div class="receipt"><div class="rhead"><h3>Pricing page</h3>
-      <span class="delta"><span class="f">38</span> → <span class="t">0</span></span></div>
+      <span class="delta"><span class="f">33</span> → <span class="t">0</span></span></div>
       <img src="artifacts/pricing.png" alt="Pricing page, before and after"></div>
 
     <div class="receipt"><div class="rhead"><h3>Sign-in form</h3>
-      <span class="delta"><span class="f">11</span> → <span class="t">0</span></span></div>
+      <span class="delta"><span class="f">10</span> → <span class="t">0</span></span></div>
       <img src="artifacts/login.png" alt="Sign-in form, before and after"></div>
 
     <div class="receipt"><div class="rhead"><h3>Dashboard / data table</h3>
-      <span class="delta"><span class="f">64</span> → <span class="t">0</span></span></div>
+      <span class="delta"><span class="f">51</span> → <span class="t">0</span></span></div>
       <img src="artifacts/dashboard.png" alt="Dashboard, before and after"></div>
 
     <div class="receipt"><div class="rhead"><h3>Settings</h3>
-      <span class="delta"><span class="f">15</span> → <span class="t">0</span></span></div>
+      <span class="delta"><span class="f">10</span> → <span class="t">0</span></span></div>
       <img src="artifacts/settings.png" alt="Settings, before and after"></div>
 
     <div class="receipt"><div class="rhead"><h3>Checkout flow — clicks to goal</h3>
@@ -227,8 +227,7 @@
       <tbody>
         <tr><td><span class="tag gate">GATE</span></td><td>Text contrast</td><td>4.5:1 / 3:1 (AA)</td><td>WCAG 1.4.3</td></tr>
         <tr><td><span class="tag gate">GATE</span></td><td>Non-text / control contrast</td><td>3:1</td><td>WCAG 1.4.11</td></tr>
-        <tr><td><span class="tag gate">GATE</span></td><td>Target size</td><td>24px / 44px</td><td>WCAG 2.5.8, HIG, Material</td></tr>
-        <tr><td><span class="tag gate">GATE</span></td><td>Target spacing</td><td>24px circles clear</td><td>WCAG 2.5.8</td></tr>
+        <tr><td><span class="tag gate">GATE</span></td><td>Target size (+ spacing exception)</td><td>24px / 44px</td><td>WCAG 2.5.8 / 2.5.5, HIG, Material</td></tr>
         <tr><td><span class="tag gate">GATE</span></td><td>Line-height (body)</td><td>≥ 1.5×</td><td>WCAG 1.4.8</td></tr>
         <tr><td><span class="tag gate">GATE</span></td><td>Line length</td><td>≤ 80, ideal ~66</td><td>WCAG 1.4.8 / Bringhurst</td></tr>
         <tr><td><span class="tag gate">GATE</span></td><td>No justified body</td><td>ragged-right</td><td>WCAG 1.4.8</td></tr>

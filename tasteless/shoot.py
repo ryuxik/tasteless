@@ -77,6 +77,10 @@ COLLECT_JS = r"""
     if (rect.width<=0 || rect.height<=0) continue;
     const s = cs(el);
     if (s.display==='none' || s.visibility==='hidden' || parseFloat(s.opacity)===0) continue;
+    // skip content marked decorative / removed from the accessibility tree —
+    // product mockups, decorative icons, duplicated text. Auditing it as if it
+    // were real UI is the #1 source of ghost findings on marketing pages.
+    if (el.closest('[aria-hidden="true"],[role=presentation],[role=none]')) continue;
     // collect the whole document (we shoot at scroll 0, so rects are also
     // document coords). Annotation must use a --full-page screenshot to align.
     if (rect.bottom < -50) continue;

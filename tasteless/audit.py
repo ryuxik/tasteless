@@ -79,22 +79,26 @@ def sample_bg(img, scale, rect, fg):
     if x1 - x0 < 2 or y1 - y0 < 2:
         return None
     crop = img.crop((x0, y0, x1, y1))
-    crop.thumbnail((48, 48))
-    arr = (np.asarray(crop).reshape(-1, 3).astype(int) // 16) * 16
-    vals, counts = np.unique(arr, axis=0, return_counts=True)
+    crop.thumbnail((60, 60))
+    arr = (np.asarray(crop).astype(int) // 16) * 16
+    h, w = arr.shape[:2]
+    # Estimate the background from the box EDGES (a border frame), where the text
+    # isn't. This is robust to text density — a dark box full of light glyphs has
+    # a solid edge, so it reads as uniform, not "varied". The centre (where the
+    # glyphs live) is excluded.
+    if h >= 4 and w >= 4:
+        m = np.ones((h, w), bool)
+        m[int(h * .3):max(int(h * .3) + 1, int(h * .7)),
+          int(w * .2):max(int(w * .2) + 1, int(w * .8))] = False
+        flat = arr[m].reshape(-1, 3)
+    else:
+        flat = arr.reshape(-1, 3)
+    vals, counts = np.unique(flat, axis=0, return_counts=True)
     if counts.sum() == 0:
         return None
-    # conf = how much ONE colour dominates the whole box → uniform bg (high) vs
-    # gradient/image (low). Measured over ALL pixels so sparse text doesn't skew it.
-    conf = float(counts.max()) / float(counts.sum())
-    # bg VALUE = the dominant colour that isn't the text colour (drop glyphs).
-    vbg, cbg = vals, counts
-    if fg is not None:
-        fgq = np.array([(c // 16) * 16 for c in fg[:3]])
-        keep = np.abs(vals - fgq).sum(axis=1) > 40
-        if keep.any():
-            vbg, cbg = vals[keep], counts[keep]
-    return tuple(int(v) for v in vbg[int(cbg.argmax())]), conf
+    i = int(counts.argmax())
+    conf = float(counts[i]) / float(counts.sum())  # edge uniformity → solid vs varied
+    return tuple(int(v) for v in vals[i]), conf
 
 
 def effective_bg(el, base=(255, 255, 255), skip_self=False):
@@ -140,16 +144,7 @@ def rule_contrast(els, ctx):
             continue
         sampled = sample_bg(img, scale, el["rect"], fg_raw) if img is not None else None
         if sampled is not None:
-            bg, conf = sampled
-            if conf < 0.5:                  # gradient/image/photo behind the text
-                out.append(_f("contrast", "GATE", "low", law, el, "varies",
-                              f"{C.required_ratio(el['fontPx'], el['bold'], level)}:1",
-                              "WARN",
-                              "Text sits on a varied background (gradient/image) — "
-                              "contrast can't be a single number; review against the "
-                              "lightest and darkest pixels it overlaps.",
-                              "indeterminate (varied background)"))
-                continue
+            bg = sampled[0]                 # background sampled from the rendered pixels
         else:                               # outside the shot, or no screenshot
             bg = effective_bg(el)
             if bg is None:                  # CSS chain hit a background image
@@ -208,44 +203,33 @@ def rule_non_text_contrast(els, ctx):
 
 
 def rule_target_size(els, ctx):
+    """WCAG 2.5.8 (AA, 24px) applies the SPACING EXCEPTION: an undersized target
+    passes if a 24px circle on it doesn't intersect another target's. So a small
+    but well-spaced link is fine — only small AND crowded fails. 2.5.5 (AAA,
+    44px) has no exception. Skipping the exception is a major ghost-finding source."""
     level = ctx["level"]
-    law = "2.5.5" if level == "AAA" else "2.5.8"
-    T = 44 if level == "AAA" else 24
-    out = []
-    for el in els:
-        if not el.get("interactive") or el.get("inlineInText"):
-            continue
-        w, h = el["rect"]["w"], el["rect"]["h"]
-        if min(w, h) < T:
-            out.append(_f("target-size", "GATE", "high", law, el,
-                          f"{w}×{h}px", f"{T}×{T}px", "FAIL",
-                          f"Grow the hit area to ≥{T}×{T}px (min-height/min-width "
-                          f"or padding). Apple HIG: 44pt · Material: 48dp.",
-                          ""))
-    return out
-
-
-def rule_target_spacing(els, ctx):
-    out = []
     tgts = [e for e in els if e.get("interactive") and not e.get("inlineInText")]
-    for a in tgts:
-        if min(a["rect"]["w"], a["rect"]["h"]) >= 24:
+    cen = [(t["rect"]["x"] + t["rect"]["w"] / 2, t["rect"]["y"] + t["rect"]["h"] / 2)
+           for t in tgts]
+    out = []
+    for i, el in enumerate(tgts):
+        w, h = el["rect"]["w"], el["rect"]["h"]
+        if level == "AAA":
+            if min(w, h) < 44:
+                out.append(_f("target-size", "GATE", "high", "2.5.5", el,
+                              f"{w}×{h}px", "44×44px", "FAIL",
+                              "Grow the hit area to ≥44×44px (Apple HIG 44pt).", ""))
             continue
-        ax, ay = a["rect"]["x"] + a["rect"]["w"] / 2, a["rect"]["y"] + a["rect"]["h"] / 2
-        crowded = False
-        for b in tgts:
-            if b is a:
-                continue
-            bx, by = b["rect"]["x"] + b["rect"]["w"] / 2, b["rect"]["y"] + b["rect"]["h"] / 2
-            if math.hypot(ax - bx, ay - by) < 24:
-                crowded = True
-                break
-        if crowded:
-            out.append(_f("target-spacing", "GATE", "med", "2.5.8", a,
-                          f"{a['rect']['w']}×{a['rect']['h']}px, neighbour <24px away",
-                          "≥24px target or ≥24px spacing", "WARN",
-                          "Enlarge to ≥24px or add spacing so 24px hit circles don't overlap.",
-                          ""))
+        if min(w, h) >= 24:
+            continue
+        cx, cy = cen[i]
+        crowded = any(j != i and math.hypot(cx - ox, cy - oy) < 24
+                      for j, (ox, oy) in enumerate(cen))
+        if crowded:  # small AND no spacing exception → real 2.5.8 failure
+            out.append(_f("target-size", "GATE", "high", "2.5.8", el,
+                          f"{w}×{h}px, neighbour <24px away", "≥24px or ≥24px spacing",
+                          "FAIL", "Grow to ≥24×24px, or add spacing so 24px hit "
+                          "circles don't overlap. (HIG 44pt · Material 48dp.)", ""))
     return out
 
 
@@ -460,7 +444,7 @@ def rule_clicks_to_goal(els, ctx):
 
 
 GATE_RULES = [rule_contrast, rule_non_text_contrast, rule_target_size,
-              rule_target_spacing, rule_line_height, rule_line_length, rule_no_justify]
+              rule_line_height, rule_line_length, rule_no_justify]
 SCORE_RULES = [rule_min_font, rule_fitts, rule_hick, rule_non_semantic,
                rule_proximity, rule_clicks_to_goal]
 
