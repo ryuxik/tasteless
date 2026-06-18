@@ -63,11 +63,13 @@ is a measured value against a published threshold.
 
 It's not one line — it's a skill plus a Python engine. Two parts:
 
-**1. Add the skill** (Claude Code):
+**1. Add the skill** (Claude Code). Install via the GitHub shorthand (relative
+plugin paths only resolve for git-added marketplaces, not a direct JSON URL):
 ```
 /plugin marketplace add ryuxik/tasteless
-/plugin install tasteless
+/plugin install tasteless@tasteless
 ```
+Then say *"run tasteless on my dev server"*, or invoke `/tasteless:tasteless`.
 
 **2. Set up the engine** (once). The skill bootstraps this automatically on first
 run; or do it yourself from a clone:
