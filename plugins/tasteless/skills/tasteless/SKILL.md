@@ -18,17 +18,19 @@ never vibes. You edit the user's **real stylesheet/markup**; you never inject an
 overlay and you never claim "WCAG/ADA compliant" (you fix *specific cited
 violations*).
 
-## Setup (first run only — bootstrap the engine before auditing)
-TASTELESS is this skill plus a small Python engine. `/plugin install` ships the
-skill, not the engine, so on the FIRST run make the engine importable; if it
-isn't, install it once:
+## Setup (first run only — bootstrap the engine)
+TASTELESS is this skill plus a small Python engine that exposes the CLIs
+`tasteless-shoot`, `tasteless-audit`, `tasteless-measure`. `/plugin install`
+ships the skill, not the engine, so on the FIRST run, if the CLI is missing,
+install it once (pipx keeps it isolated + on PATH; falls back to pip --user):
 ```
-python -c "import tasteless" 2>/dev/null \
-  || pip install "git+https://github.com/ryuxik/tasteless.git"
-python -m playwright install chromium     # one-time headless-browser download
+command -v tasteless-audit >/dev/null 2>&1 || \
+  pipx install "git+https://github.com/ryuxik/tasteless.git" 2>/dev/null || \
+  python3 -m pip install --user "git+https://github.com/ryuxik/tasteless.git"
 ```
-(From a clone, `./setup.sh` — or `pip install -e .` — does the same; it pulls
-playwright + torch/timm + opencv.) Once `import tasteless` succeeds, run the loop.
+The core install is light (no torch); the browser auto-downloads on first shoot.
+The DINOv2 hierarchy step (step 3) needs the extra: `pipx inject tasteless-ux
+torch timm opencv-python-headless` (or install `tasteless-ux[hierarchy]`).
 
 ## The loop
 
@@ -40,13 +42,13 @@ level (AA/AAA), declared hierarchy, and any rule overrides.
 contrast samples the real background of every element (below-fold elements would
 otherwise default to white and report inverted/wrong contrast):
 ```
-python -m tasteless.shoot --url <URL> --out /tmp/tl --full-page
+tasteless-shoot --url <URL> --out /tmp/tl --full-page
 ```
 Add `--mobile` to also check the phone viewport (target-size matters most there).
 
 **2. Audit.** Produce the cited scorecard:
 ```
-python -m tasteless.audit /tmp/tl.json --level AA --json /tmp/tl.score.json
+tasteless-audit /tmp/tl.json --level AA --json /tmp/tl.score.json
 ```
 Read it. Each finding has `rule`, `measured`, `threshold`, `fix`, `citation`,
 `class` (GATE / SCORE), `severity`, and the offending `element` (tag + text +
@@ -55,7 +57,7 @@ rect). The summary's `gates_clean` is your exit condition.
 **3. Hierarchy (perceptual — shown, not gated).** Optionally measure where the
 layout pulls the eye and compare to the intent declared in config:
 ```
-python -m tasteless.measure /tmp/tl.png --axis rows --json /tmp/tl.hier.json
+tasteless-measure /tmp/tl.png --axis rows --json /tmp/tl.hier.json   # needs the [hierarchy] extra
 ```
 Report the heatmap + the measured-vs-intended gap. Do **not** auto-force layout
 changes from this; surface it as a recommendation.

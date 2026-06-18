@@ -20,7 +20,6 @@ import functools
 import json
 from pathlib import Path
 
-import cv2
 import numpy as np
 
 MEAN = np.array([0.485, 0.456, 0.406], np.float32)
@@ -28,9 +27,21 @@ STD = np.array([0.229, 0.224, 0.225], np.float32)
 DINO_SIDE = 518
 MODEL = "vit_small_patch14_reg4_dinov2.lvd142m"  # registers variant — no artifacts
 
+# torch/timm/opencv are the ONE heavy dependency, and only this module needs
+# them — they're an optional extra so the core audit installs light.
+_HINT = ("the visual-hierarchy module needs the optional deps:\n"
+         "    pip install 'tasteless-ux[hierarchy]'   (torch, timm, opencv)")
+
+
+def _need(name):
+    try:
+        return __import__(name)
+    except ImportError:
+        raise SystemExit("tasteless: " + _HINT)
+
 
 def _device():
-    import torch
+    torch = _need("torch")
     return "mps" if torch.backends.mps.is_available() else "cpu"
 
 
@@ -38,12 +49,13 @@ def _device():
 def _model(dev):
     """Load DINOv2 once per device and reuse it — model creation is expensive,
     and callers may measure many images in a loop."""
-    import timm
+    timm = _need("timm")
     return timm.create_model(MODEL, pretrained=True, num_classes=0).eval().to(dev)
 
 
 def saliency(rgb):
-    import torch
+    cv2 = _need("cv2")
+    torch = _need("torch")
     import torch.nn.functional as F
     dev = _device()
     dino = _model(dev)
@@ -59,6 +71,7 @@ def saliency(rgb):
 
 
 def measure(src: str, axis: str = "rows", crop=None):
+    cv2 = _need("cv2")
     src = Path(src)
     bgr = cv2.imread(str(src))
     if bgr is None:

@@ -61,38 +61,36 @@ is a measured value against a published threshold.
 
 ## Install
 
-It's not one line — it's a skill plus a Python engine. Two parts:
+**The tool (recommended).** Core is light — no torch. [pipx](https://pipx.pypa.io)
+keeps it isolated and on your PATH; the headless browser auto-installs on first run:
+```bash
+pipx install "git+https://github.com/ryuxik/tasteless.git"
+tasteless-shoot --url http://localhost:3000 --out /tmp/tl --full-page
+tasteless-audit /tmp/tl.json
+```
+No pipx? `python3 -m pip install --user "git+https://github.com/ryuxik/tasteless.git"`.
+From a clone? `./setup.sh` (creates a `.venv`).
 
-**1. Add the skill** (Claude Code). Install via the GitHub shorthand (relative
-plugin paths only resolve for git-added marketplaces, not a direct JSON URL):
+The DINOv2 visual-hierarchy heatmap is the one heavy, **optional** piece:
+```bash
+pipx inject tasteless-ux torch timm opencv-python-headless   # or: pip install "tasteless-ux[hierarchy]"
+tasteless-measure /tmp/tl.png --axis rows
+```
+
+**As a Claude Code skill.** In the Claude Code **terminal CLI** (`/plugin` isn't
+exposed in the desktop/web apps):
 ```
 /plugin marketplace add ryuxik/tasteless
 /plugin install tasteless@tasteless
 ```
-Then say *"run tasteless on my dev server"*, or invoke `/tasteless:tasteless`.
-
-**2. Set up the engine** (once). The skill bootstraps this automatically on first
-run; or do it yourself from a clone:
-```
-./setup.sh          # = pip install -e .  &&  python -m playwright install chromium
-```
-The engine pulls playwright + torch/timm + opencv, so the first run isn't instant.
-
-## Use it standalone
-
+On a surface without `/plugin`, drop the skill in your skills dir instead — after
+the pipx install above:
 ```bash
-# render + extract
-python -m tasteless.shoot --url http://localhost:3000 --out /tmp/tl
-
-# cited scorecard
-python -m tasteless.audit /tmp/tl.json --level AA --json /tmp/tl.score.json
-
-# the one perceptual module (shown, not gated)
-python -m tasteless.measure /tmp/tl.png --axis rows
+git clone https://github.com/ryuxik/tasteless
+cp -r tasteless/plugins/tasteless/skills/tasteless ~/.claude/skills/tasteless
 ```
-
-Or just say *"run tasteless on my dev server"* to Claude Code and it'll run the
-audit → fix → re-measure loop for you (see the skill).
+Either way, then just say *"run tasteless on my dev server"* and it runs the
+audit → fix → re-measure loop (see the skill).
 
 ## See it work
 

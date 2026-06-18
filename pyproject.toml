@@ -11,16 +11,18 @@ requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Santiago Munoz" }]
 keywords = ["design", "ux", "accessibility", "wcag", "fitts", "css", "audit"]
+# Core = the audit + fix loop. Light + fast (no torch).
 dependencies = [
   "playwright>=1.40",
   "numpy>=1.24",
-  "opencv-python-headless>=4.8",
-  "timm>=1.0",
-  "torch>=2.1",
-  "torchvision>=0.16",
-  "pyyaml>=6.0",
   "pillow>=10.0",
+  "pyyaml>=6.0",
 ]
+
+# The DINOv2 visual-hierarchy heatmap is the ONE heavy, optional module.
+#   pip install "tasteless-ux[hierarchy]"
+[project.optional-dependencies]
+hierarchy = ["torch>=2.1", "torchvision>=0.16", "timm>=1.0", "opencv-python-headless>=4.8"]
 
 [project.scripts]
 tasteless-shoot = "tasteless.shoot:main"

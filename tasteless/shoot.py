@@ -133,6 +133,22 @@ COLLECT_JS = r"""
 """
 
 
+def _launch_chromium(p):
+    """Launch headless chromium; if the browser isn't downloaded yet, fetch it
+    once and retry — so the first run just works, no separate install step."""
+    try:
+        return p.chromium.launch()
+    except Exception as e:
+        if "Executable doesn't exist" in str(e) or "playwright install" in str(e):
+            import subprocess
+            import sys
+            print("first run: downloading the headless browser (one time)…")
+            subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"],
+                           check=True)
+            return p.chromium.launch()
+        raise
+
+
 def shoot(url: str, out: str, width: int, height: int,
           full_page: bool = False, mobile: bool = False) -> dict:
     from playwright.sync_api import sync_playwright
@@ -142,7 +158,7 @@ def shoot(url: str, out: str, width: int, height: int,
     out_png.parent.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = _launch_chromium(p)
         ctx = browser.new_context(
             viewport={"width": width, "height": height},
             device_scale_factor=2 if mobile else 1,
@@ -203,7 +219,7 @@ def crawl(start: str, goal: str, max_depth: int = 5, max_pages: int = 60) -> dic
     result = {"goal": goal, "start": start, "max_depth": max_depth,
               "reached": False, "clicks": None, "path": [], "pages_visited": 0}
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = _launch_chromium(p)
         page = browser.new_context().new_page()
         q = deque([(start, [start])])
         while q and result["pages_visited"] < max_pages:

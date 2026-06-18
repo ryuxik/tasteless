@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
-# One-command setup for the TASTELESS engine. The Claude Code skill also runs
-# this automatically on first use — see the skill's Setup step.
+# Set up the TASTELESS engine from a clone, into an isolated .venv.
+#   ./setup.sh              core audit (light, fast)
+#   ./setup.sh --hierarchy  + the DINOv2 visual-hierarchy heatmap (torch/timm/opencv)
 set -euo pipefail
 
-# install the engine (editable from a clone, else straight from GitHub)
-python -m pip install -e . 2>/dev/null \
-  || python -m pip install "git+https://github.com/ryuxik/tasteless.git"
+PY="${PYTHON:-python3}"   # pyenv & most systems expose python3, not python
+command -v "$PY" >/dev/null 2>&1 || { echo "✗ need python3 on PATH"; exit 1; }
 
-# one-time headless-browser download for rendering
+"$PY" -m venv .venv
+# shellcheck disable=SC1091
+. .venv/bin/activate
+python -m pip install -q --upgrade pip
+
+EXTRA=""
+[ "${1:-}" = "--hierarchy" ] && EXTRA="[hierarchy]"
+python -m pip install -e ".${EXTRA}"
 python -m playwright install chromium
 
-echo "✓ TASTELESS engine ready — try: python -m tasteless.shoot --url http://localhost:3000 --out /tmp/tl"
+echo
+echo "✓ TASTELESS ready in .venv${EXTRA:+ (with hierarchy)}."
+echo "  source .venv/bin/activate"
+echo "  tasteless-shoot --url http://localhost:3000 --out /tmp/tl --full-page && tasteless-audit /tmp/tl.json"
