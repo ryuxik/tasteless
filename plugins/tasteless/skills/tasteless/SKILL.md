@@ -36,9 +36,11 @@ playwright + torch/timm + opencv.) Once `import tasteless` succeeds, run the loo
 or a `file://` path. Read `tasteless.config.yaml` if present for the conformance
 level (AA/AAA), declared hierarchy, and any rule overrides.
 
-**1. Shoot.** Render and extract geometry + computed styles:
+**1. Shoot.** Render and extract geometry + computed styles. Use `--full-page` so
+contrast samples the real background of every element (below-fold elements would
+otherwise default to white and report inverted/wrong contrast):
 ```
-python -m tasteless.shoot --url <URL> --out /tmp/tl
+python -m tasteless.shoot --url <URL> --out /tmp/tl --full-page
 ```
 Add `--mobile` to also check the phone viewport (target-size matters most there).
 

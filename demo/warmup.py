@@ -31,7 +31,9 @@ SITES = [
 def run(name, url):
     base = ART / f"warmup_{name}"
     try:
-        S.shoot(url, str(base), 1440, 900, full_page=False)
+        # full_page so contrast samples the real background of EVERY element,
+        # not just the top fold (below-fold elements otherwise default to white)
+        S.shoot(url, str(base), 1440, 900, full_page=True)
     except Exception as e:
         print(f"  {name:8} FAILED to load: {str(e)[:80]}")
         return None

@@ -110,12 +110,15 @@ def effective_bg(el, base=(255, 255, 255), skip_self=False):
     chain = el.get("bgChain", [])
     if skip_self and chain:
         chain = chain[1:]
-    out = base
+    out, applied = base, False
     for c in reversed(chain):  # root → self
         p = C.parse_color(c)
         if p:
-            out = C.composite(p, out)
-    return out
+            out, applied = C.composite(p, out), True
+    # No explicit background anywhere in the chain → we'd be GUESSING white.
+    # Return None so the caller warns instead of asserting a (possibly inverted)
+    # contrast against an assumed-white background.
+    return out if applied else None
 
 
 def _f(rule, cls, sev, law, el, measured, threshold, status, fix, note=""):
@@ -147,10 +150,11 @@ def rule_contrast(els, ctx):
             bg = sampled[0]                 # background sampled from the rendered pixels
         else:                               # outside the shot, or no screenshot
             bg = effective_bg(el)
-            if bg is None:                  # CSS chain hit a background image
+            if bg is None:                  # bg image, or element below the shot
                 out.append(_f("contrast", "GATE", "med", law, el, None, None, "WARN",
-                              "Background image behind text — verify contrast manually "
-                              "(can't be measured statically).",
+                              "Couldn't determine the background (background image, or "
+                              "the element is below the captured screenshot) — re-shoot "
+                              "with --full-page, or verify manually.",
                               "indeterminate background"))
                 continue
         fg = C.composite(fg_raw, bg)
