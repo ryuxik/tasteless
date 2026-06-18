@@ -31,7 +31,7 @@ until clean. It is **not** an accessibility overlay (those got accessiBe a
 *specific, cited violations*, which is a different and honest thing.
 
 Of everything it checks, exactly **one** rule is perceptual: **visual
-hierarchy**. For that it *shows* you a bottom-up salience heatmap (DINOv2 with
+hierarchy**. For that it *shows* you an unsupervised salience heatmap (DINOv2 with
 registers — see [*Vision Transformers Need Registers*](https://arxiv.org/abs/2309.16588)). It's a proxy for where the
 layout pulls the eye, **not** a prediction of human gaze — it ignores reading
 order and your top-down goals on purpose, so you can compare the pull you
@@ -61,17 +61,20 @@ is a measured value against a published threshold.
 
 ## Install
 
-As a Claude Code skill:
+It's not one line — it's a skill plus a Python engine. Two parts:
+
+**1. Add the skill** (Claude Code):
 ```
-/plugin marketplace add <your-org>/tasteless
+/plugin marketplace add ryuxik/tasteless
 /plugin install tasteless
 ```
 
-Then, in the repo (the engine needs Python):
+**2. Set up the engine** (once). The skill bootstraps this automatically on first
+run; or do it yourself from a clone:
 ```
-pip install -e .
-python -m playwright install chromium
+./setup.sh          # = pip install -e .  &&  python -m playwright install chromium
 ```
+The engine pulls playwright + torch/timm + opencv, so the first run isn't instant.
 
 ## Use it standalone
 
@@ -129,7 +132,7 @@ AFTER   visual pull on the photo half: 51%   peak  76%   centroid → centre
 ```
 
 It will never make flat text out-pull a photograph — it's not pretending to be
-eye-tracking. It measures bottom-up pull and shows the photo no longer dominates
+eye-tracking. It measures visual pull (unsupervised salience, not gaze) and shows the photo no longer dominates
 the fold. Artifact: `demo/artifacts/hierarchy.png` (the two heatmaps + metrics).
 
 ### Watch it, literally

@@ -1,7 +1,7 @@
 """The DINOv2 visual-hierarchy loop, demonstrated.
 
 Declared intent: the headline + CTA lead; the photo is decorative/secondary.
-We render before & after, measure bottom-up salience with DINOv2 (axis=cols, the
+We render before & after, measure unsupervised salience with DINOv2 (axis=cols, the
 left content column vs the right photo), and show the share of visual pull on the
 photo half collapsing — the perceptual fix, MEASURED. This module is shown, not
 gated: it reports the gap between measured pull and declared intent.

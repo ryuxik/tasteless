@@ -1,6 +1,6 @@
 """The ONE perceptual module — surfaced, never gated.
 
-Computes a bottom-up visual-salience map of a UI screenshot with DINOv2 (the
+Computes an unsupervised visual-salience map of a UI screenshot with DINOv2 (the
 `reg4` registers variant, so the map is free of the high-norm background
 artifacts that plague raw ViT attention — "Vision Transformers Need Registers",
 arXiv:2309.16588). Patch tokens' cosine similarity to the CLS token gives a
@@ -105,7 +105,7 @@ def measure(src: str, axis: str = "rows", crop=None):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Bottom-up salience heatmap (shown, not gated).")
+    ap = argparse.ArgumentParser(description="Unsupervised salience heatmap (shown, not gated).")
     ap.add_argument("image")
     ap.add_argument("--axis", choices=["rows", "cols"], default="rows")
     ap.add_argument("--crop", help="x,y,w,h")

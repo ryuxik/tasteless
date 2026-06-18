@@ -18,10 +18,17 @@ never vibes. You edit the user's **real stylesheet/markup**; you never inject an
 overlay and you never claim "WCAG/ADA compliant" (you fix *specific cited
 violations*).
 
-## Prerequisites
-The Python engine must be importable: `pip install -e .` from the repo (pulls
-playwright + torch/timm + opencv), then `python -m playwright install chromium`
-once. Commands below assume the repo's venv.
+## Setup (first run only — bootstrap the engine before auditing)
+TASTELESS is this skill plus a small Python engine. `/plugin install` ships the
+skill, not the engine, so on the FIRST run make the engine importable; if it
+isn't, install it once:
+```
+python -c "import tasteless" 2>/dev/null \
+  || pip install "git+https://github.com/ryuxik/tasteless.git"
+python -m playwright install chromium     # one-time headless-browser download
+```
+(From a clone, `./setup.sh` — or `pip install -e .` — does the same; it pulls
+playwright + torch/timm + opencv.) Once `import tasteless` succeeds, run the loop.
 
 ## The loop
 
