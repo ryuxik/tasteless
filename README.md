@@ -145,4 +145,4 @@ to `demo/artifacts/`:
 
 ## License
 
-MIT.
+[Apache-2.0](LICENSE).
