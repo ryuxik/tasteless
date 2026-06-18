@@ -20,3 +20,6 @@ demo/artifacts/heat_*.png
 
 # launch playbook stays local (don't ship the marketing copy in the public repo)
 LAUNCH.md
+
+# warm-up audits of third-party sites stay local
+demo/artifacts/warmup_*

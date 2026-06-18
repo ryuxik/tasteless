@@ -20,6 +20,8 @@ import math
 import statistics
 from pathlib import Path
 
+import numpy as np
+
 from . import color as C
 
 LAW = {
@@ -48,6 +50,51 @@ CTA_WORDS = ("sign up", "signup", "get started", "start", "buy", "subscribe",
 def _rgb(s):
     p = C.parse_color(s)
     return p
+
+
+def _load_shot(data):
+    """Load the screenshot so contrast can be measured against the REAL rendered
+    background (images, gradients, video) instead of guessing from the CSS chain."""
+    p = data.get("screenshot")
+    if not p or not Path(p).exists():
+        return None, 1.0
+    try:
+        from PIL import Image
+        im = Image.open(p).convert("RGB")
+    except Exception:
+        return None, 1.0
+    vw = data.get("viewport", {}).get("w") or 1440
+    return im, (im.width / vw if vw else 1.0)
+
+
+def sample_bg(img, scale, rect, fg):
+    """Dominant background colour behind a text element, sampled from the pixels —
+    excluding colours close to the text colour so glyphs don't skew it. Returns
+    None if the rect is outside the captured screenshot (e.g. below a viewport
+    shot), so the caller can fall back to the CSS chain."""
+    x0, y0 = int(rect["x"] * scale), int(rect["y"] * scale)
+    x1, y1 = int((rect["x"] + rect["w"]) * scale), int((rect["y"] + rect["h"]) * scale)
+    x0, y0 = max(0, x0), max(0, y0)
+    x1, y1 = min(img.width, x1), min(img.height, y1)
+    if x1 - x0 < 2 or y1 - y0 < 2:
+        return None
+    crop = img.crop((x0, y0, x1, y1))
+    crop.thumbnail((48, 48))
+    arr = (np.asarray(crop).reshape(-1, 3).astype(int) // 16) * 16
+    vals, counts = np.unique(arr, axis=0, return_counts=True)
+    if counts.sum() == 0:
+        return None
+    # conf = how much ONE colour dominates the whole box → uniform bg (high) vs
+    # gradient/image (low). Measured over ALL pixels so sparse text doesn't skew it.
+    conf = float(counts.max()) / float(counts.sum())
+    # bg VALUE = the dominant colour that isn't the text colour (drop glyphs).
+    vbg, cbg = vals, counts
+    if fg is not None:
+        fgq = np.array([(c // 16) * 16 for c in fg[:3]])
+        keep = np.abs(vals - fgq).sum(axis=1) > 40
+        if keep.any():
+            vbg, cbg = vals[keep], counts[keep]
+    return tuple(int(v) for v in vbg[int(cbg.argmax())]), conf
 
 
 def effective_bg(el, base=(255, 255, 255), skip_self=False):
@@ -83,20 +130,34 @@ def _f(rule, cls, sev, law, el, measured, threshold, status, fix, note=""):
 def rule_contrast(els, ctx):
     level = ctx["level"]
     law = "1.4.6" if level == "AAA" else "1.4.3"
+    img, scale = ctx.get("img"), ctx.get("scale", 1.0)
     out = []
     for el in els:
         if not el.get("text"):
             continue
-        bg = effective_bg(el)
-        if bg is None:
-            out.append(_f("contrast", "GATE", "med", law, el, None, None, "WARN",
-                          "Background image behind text — verify contrast manually "
-                          "(can't be measured statically).",
-                          "indeterminate background"))
-            continue
-        fg_raw = C.parse_color(el["color"])
+        fg_raw = C.parse_color(el.get("color") or "")
         if not fg_raw:
             continue
+        sampled = sample_bg(img, scale, el["rect"], fg_raw) if img is not None else None
+        if sampled is not None:
+            bg, conf = sampled
+            if conf < 0.5:                  # gradient/image/photo behind the text
+                out.append(_f("contrast", "GATE", "low", law, el, "varies",
+                              f"{C.required_ratio(el['fontPx'], el['bold'], level)}:1",
+                              "WARN",
+                              "Text sits on a varied background (gradient/image) — "
+                              "contrast can't be a single number; review against the "
+                              "lightest and darkest pixels it overlaps.",
+                              "indeterminate (varied background)"))
+                continue
+        else:                               # outside the shot, or no screenshot
+            bg = effective_bg(el)
+            if bg is None:                  # CSS chain hit a background image
+                out.append(_f("contrast", "GATE", "med", law, el, None, None, "WARN",
+                              "Background image behind text — verify contrast manually "
+                              "(can't be measured statically).",
+                              "indeterminate background"))
+                continue
         fg = C.composite(fg_raw, bg)
         req = C.required_ratio(el["fontPx"], el["bold"], level)
         ratio = C.contrast(fg, bg)
@@ -118,16 +179,14 @@ def rule_non_text_contrast(els, ctx):
     for el in els:
         if not el.get("interactive") or el.get("inlineInText"):
             continue
-        is_control = (el["tag"] in ("button", "input", "select", "textarea")
-                      or el.get("role") == "button")
         self_bg = C.parse_color(el.get("selfBg") or "")
         has_fill = bool(self_bg and self_bg[3] >= 0.5)
         has_border = (el.get("borderWidth") or 0) >= 1 and bool(
             (bc0 := C.parse_color(el.get("borderColor") or "")) and bc0[3] >= 0.5)
-        # A plain text link (no fill, no border) is identified by its text, not a
-        # boundary — 1.4.11 doesn't apply. We check real controls and anything
-        # styled AS a control (a button-like link/div with a fill or border).
-        if not (is_control or has_fill or has_border):
+        # 1.4.11 needs a visual boundary to measure. A control with no fill AND no
+        # border is a text/link-style control, identified by its text — skip it
+        # (measuring "0:1" on a bare <button> is a false positive, not a finding).
+        if not (has_fill or has_border):
             continue
         parent_bg = effective_bg(el, skip_self=True)
         if parent_bg is None:
@@ -414,8 +473,9 @@ NOT_RUN_BASE = {
 
 def audit(data, level="AA", crawl=None, goal_target=None):
     els = data["elements"]
+    img, scale = _load_shot(data)
     ctx = {"level": level, "viewport": data.get("viewport", {"w": 1440, "h": 900}),
-           "crawl": crawl, "goal_target": goal_target}
+           "crawl": crawl, "goal_target": goal_target, "img": img, "scale": scale}
     not_run = dict(NOT_RUN_BASE)
     if not crawl:
         not_run["clicks-to-goal"] = "no crawl supplied (shoot --crawl --goal ...)"
