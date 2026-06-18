@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atlas — hierarchy demo (before)</title>
+<!--
+  Declared intent (tasteless.config.yaml):
+    hero: "the headline and the Start free trial CTA should lead the eye;
+           the photograph is decorative and should be secondary."
+  This page passes the WCAG gates. Its only problem is perceptual: the giant
+  saturated photo hijacks the top fold, so the eye never reaches the message.
+  That's what the DINOv2 salience module is for — it's SHOWN, not gated.
+-->
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system, system-ui, sans-serif; color:#16161a; background:#fff; }
+  nav { display:flex; gap:20px; align-items:center; padding:22px 56px; }
+  .word { font-weight:700; font-size:19px; margin-right:auto; }
+  nav a { color:#3a3a3a; text-decoration:none; font-size:14px; padding:8px 6px; }
+  .hero { display:flex; align-items:stretch; min-height:84vh; }
+  .copy { flex:0 0 44%; padding:64px 56px; display:flex; flex-direction:column; justify-content:center; }
+  .eyebrow { font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:#6a6a6a; }
+  h1 { font-size:50px; line-height:1.05; font-weight:700; letter-spacing:-.02em; margin:14px 0 18px; }
+  .sub { font-size:18px; line-height:1.6; color:#444; max-width:48ch; }
+  .cta { align-self:flex-start; margin-top:30px; background:#1a1a1a; color:#fff; font-size:15px;
+         padding:13px 24px; border-radius:9px; text-decoration:none; }
+  /* the decorative photo dominates the right half, full bleed, full saturation */
+  .art { flex:1; }
+  .art img { width:100%; height:100%; object-fit:cover; display:block; }
+</style></head>
+<body>
+  <nav><span class="word">Atlas</span>
+    <a href="#">Product</a><a href="#">Pricing</a><a href="#">Docs</a><a href="#">Start free trial</a>
+  </nav>
+  <section class="hero">
+    <div class="copy">
+      <div class="eyebrow">Field notebooks, reimagined</div>
+      <h1>Capture the idea before it's gone.</h1>
+      <p class="sub">Atlas turns the half-thought you have on a walk into something
+         you'll actually find again. Quiet, fast, yours.</p>
+      <a class="cta" href="#">Start free trial</a>
+    </div>
+    <div class="art"><img src="assets/hero.jpg" alt="A winding road through hills"></div>
+  </section>
+</body></html>

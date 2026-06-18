@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+build/
+dist/
+.DS_Store
+/tmp/
+
+# regenerable intermediates (drivers re-create these); keep only the final artifacts
+demo/artifacts/*_before.png
+demo/artifacts/*_after.png
+demo/artifacts/*_before.json
+demo/artifacts/*_after.json
+demo/artifacts/*.score.json
+demo/artifacts/*.measure.json
+demo/artifacts/*.crawl.json
+demo/artifacts/heat_*.png
+*.webm

@@ -1,0 +1,10 @@
+{
+  "name": "tasteless",
+  "description": "Audit a rendered UI against the measurable laws of UX and auto-fix the violations in a loop. WCAG contrast, target size (Fitts/HIG/Material), line length, line-height, justified text, Hick overload, non-semantic controls. Each fix cited to its rule.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Santiago Munoz",
+    "url": "https://github.com/ryuxik"
+  },
+  "keywords": ["design", "ux", "accessibility", "wcag", "audit", "css", "fitts", "a11y"]
+}

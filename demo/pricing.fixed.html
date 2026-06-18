@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing — Lumen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, system-ui, sans-serif; background: #fff; color: #1a1a1a; }
+  nav { display:flex; gap:20px; align-items:center; padding:22px 48px; border-bottom:1px solid #f0f0f0; }
+  .word { font-weight:600; font-size:18px; margin-right:auto; }
+  nav a { color:#4a4a4a; text-decoration:none; font-size:13px; padding:8px 6px; }
+  h1 { text-align:center; font-size:44px; font-weight:600; margin:64px 0 8px; letter-spacing:-.02em; }
+  .lede { text-align:center; color:#595959; font-size:16px; margin-bottom:48px; }
+  .grid { display:flex; justify-content:center; align-items:flex-start; gap:32px; padding:0 48px; }
+  .card { width:300px; border:1px solid #e6e6e6; border-radius:14px; padding:32px 28px; }
+  .plan { font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:#595959; }
+  .price { font-size:40px; font-weight:700; margin:8px 0 2px; }
+  .per { color:#595959; font-size:13px; }
+  .features { margin:22px 0; }
+  .features li { list-style:none; color:#444; font-size:15px; line-height:1.55; margin:9px 0; text-align:left; }
+  .choose { display:inline-block; width:100%; text-align:center; background:#1a1a1a;
+            color:#fff; font-size:15px; padding:13px 0; border-radius:8px; text-decoration:none; }
+  .compare { display:block; text-align:center; margin:40px auto; font-size:15px; color:#2f5fbf;
+             text-decoration:none; padding:8px; width:fit-content; }
+</style></head>
+<body>
+  <nav><span class="word">Lumen</span>
+    <a href="#">Product</a><a href="#">Pricing</a><a href="#">Docs</a><a href="#">Sign in</a>
+  </nav>
+  <h1>Simple, quiet pricing</h1>
+  <p class="lede">Start free. Grow when you're ready. No surprises.</p>
+  <div class="grid">
+    <div class="card">
+      <div class="plan">Starter</div><div class="price">$0</div><div class="per">forever</div>
+      <ul class="features">
+        <li>Up to 3 projects with full version history and unlimited collaborators</li>
+        <li>Community support</li><li>1GB storage</li>
+      </ul>
+      <a class="choose" href="#">Choose Starter</a>
+    </div>
+    <div class="card">
+      <div class="plan">Team</div><div class="price">$12</div><div class="per">per seat / month</div>
+      <ul class="features">
+        <li>Everything in Starter plus unlimited projects and granular permissions</li>
+        <li>Email support</li><li>100GB storage</li>
+      </ul>
+      <a class="choose" href="#">Choose Team</a>
+    </div>
+    <div class="card">
+      <div class="plan">Scale</div><div class="price">$39</div><div class="per">per seat / month</div>
+      <ul class="features">
+        <li>Everything in Team plus SSO, audit logs, and an uptime SLA</li>
+        <li>24/7 support</li><li>Unlimited storage</li>
+      </ul>
+      <a class="choose" href="#">Choose Scale</a>
+    </div>
+  </div>
+  <a class="compare" href="#">Compare all features →</a>
+</body></html>

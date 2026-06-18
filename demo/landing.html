@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumen — calm software</title>
+<style>
+  :root { --ink:#1a1a1a; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #ffffff;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* ——— masthead: looks elegant, hides 9 equal-weight choices ——— */
+  nav {
+    display: flex; align-items: center; gap: 22px;
+    padding: 26px 48px; border-bottom: 1px solid #f0f0f0;
+  }
+  .word { font-size: 20px; letter-spacing: .02em; margin-right: auto; }
+  nav a {
+    /* trendy "quiet" nav — low contrast, tiny tap targets */
+    color: #bdbdbd; text-decoration: none; font-size: 13px;
+    font-family: -apple-system, system-ui, sans-serif; letter-spacing: .04em;
+  }
+  /* ——— hero ——— */
+  .hero { max-width: 1180px; margin: 0 auto; padding: 110px 48px 80px; text-align: center; }
+  h1 { font-size: 64px; line-height: 1.05; font-weight: 400; letter-spacing: -.01em; }
+  .sub {
+    /* fashionable gray-on-white subhead */
+    color: #aeaeae; font-size: 22px; line-height: 1.4; margin: 26px auto 0;
+    max-width: 620px; font-family: -apple-system, system-ui, sans-serif;
+  }
+  /* ——— the ghost CTA: on-trend, invisible, un-clickable ——— */
+  .cta {
+    display: inline-block; margin-top: 40px;
+    font-family: -apple-system, system-ui, sans-serif; font-size: 13px;
+    color: #b4b4b4; text-decoration: none; letter-spacing: .06em;
+    border: 1px solid #ececec; padding: 4px 16px; border-radius: 4px;
+  }
+  /* ——— body copy: wide, justified, tight, gray ——— */
+  .prose {
+    max-width: 1080px; margin: 90px auto 0; padding: 0 48px;
+    font-size: 16px; line-height: 1.25; text-align: justify; color: #9b9b9b;
+    font-family: -apple-system, system-ui, sans-serif;
+  }
+  .prose p { margin-bottom: 18px; }
+  .fakelink { color: #b4b4b4; cursor: pointer; display: inline; }
+  footer {
+    max-width: 1080px; margin: 100px auto 60px; padding: 0 48px;
+    font-size: 11px; color: #c4c4c4; font-family: -apple-system, system-ui, sans-serif;
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <span class="word">Lumen</span>
+    <a href="#">Product</a>
+    <a href="#">Solutions</a>
+    <a href="#">Developers</a>
+    <a href="#">Resources</a>
+    <a href="#">Pricing</a>
+    <a href="#">Customers</a>
+    <a href="#">Company</a>
+    <a href="#">Blog</a>
+    <a href="#">Sign in</a>
+  </nav>
+
+  <section class="hero">
+    <h1>Software that gets<br>out of your way.</h1>
+    <p class="sub">Lumen is the calm, considered workspace for teams who would
+       rather think than configure. Quiet by default, powerful underneath.</p>
+    <a class="cta" href="#">Get started</a>
+  </section>
+
+  <section class="prose">
+    <p>We started Lumen because every tool we used felt louder than the work it
+       was supposed to hold. Notifications stacked on notifications, dashboards
+       sprouting dashboards, a settings panel for the settings panel. The
+       industry had confused density with capability, and the people doing the
+       actual work were paying for it in attention they could not spare.</p>
+    <p>So we built the opposite. A surface that recedes. A grid that breathes.
+       Typography that trusts you to read. Underneath, the same speed and rigor
+       you expect — version history, granular permissions, an API that does not
+       fight you — but presented so that none of it asks for your attention until
+       you ask for it first. <span class="fakelink" onclick="void 0">Learn more →</span></p>
+  </section>
+
+  <footer>© 2026 Lumen, Inc. · Privacy · Terms · Status · Careers · Press</footer>
+</body>
+</html>

@@ -1,0 +1,29 @@
+# TASTELESS config — drop this at your project root as `tasteless.config.yaml`.
+# Everything here is optional; defaults are sane. The declaration is the point:
+# you state intent, the agent measures the gap.
+
+# Conformance level for the gated rules.  AA (24px targets, 4.5:1) | AAA (44px, 7:1)
+level: AA
+
+# The viewport(s) to render. Add 'mobile' to also check the phone layout, where
+# target-size violations actually bite.
+viewports:
+  - { width: 1440, height: 900 }
+  # - { mobile: true }
+
+# Declared visual hierarchy, per unit, for the perceptual module. This is the
+# intent the salience heatmap is compared against — NOT a gate, a diff.
+hierarchy:
+  page: "the hero headline and the primary CTA should be the two strongest pulls; nav and footer quiet"
+  masthead: "the active nav item is the peak; other links subordinate; wordmark quiet"
+
+# Declared goal(s) for clicks-to-goal (requires a crawl; off by default).
+goals:
+  # - name: "start checkout"
+  #   reach: "the primary CTA -> pricing -> checkout"
+
+# Per-rule overrides. Turn a rule off, or change a SCORE rule into a GATE.
+rules:
+  # contrast: gate          # default
+  # min-font: gate          # promote the readability floor to a hard gate
+  # hick: off               # silence the nav-overload note

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — Lumen</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system, system-ui, sans-serif; background:#fff; color:#1a1a1a; }
+  nav { display:flex; gap:18px; align-items:center; padding:16px 32px; border-bottom:1px solid #f0f0f0; }
+  .word { font-weight:600; font-size:16px; margin-right:auto; }
+  nav a { color:#c4c4c4; text-decoration:none; font-size:12px; }
+  .head { display:flex; align-items:center; padding:24px 32px 12px; }
+  .head h1 { font-size:22px; font-weight:600; margin-right:auto; }
+  /* tiny icon buttons */
+  .iconbtn { width:18px; height:18px; border:1px solid #ededed; border-radius:5px; color:#c0c0c0;
+             font-size:11px; text-align:center; line-height:16px; text-decoration:none; margin-left:6px; }
+  table { width:calc(100% - 64px); margin:8px 32px; border-collapse:collapse; }
+  th { text-align:left; font-size:11px; color:#cccccc; font-weight:500; padding:8px 10px; border-bottom:1px solid #f0f0f0; }
+  td { font-size:12px; color:#9c9c9c; padding:7px 10px; border-bottom:1px solid #f6f6f6; line-height:1.25; }
+  td a { color:#bdbdbd; text-decoration:none; }
+  .pill { font-size:11px; color:#bcbcbc; }
+</style></head>
+<body>
+  <nav><span class="word">Lumen</span>
+    <a href="#">Overview</a><a href="#">Projects</a><a href="#">Tasks</a><a href="#">Reports</a>
+    <a href="#">Members</a><a href="#">Billing</a><a href="#">Integrations</a><a href="#">Audit</a>
+    <a href="#">Settings</a><a href="#">Help</a>
+  </nav>
+  <div class="head">
+    <h1>Projects</h1>
+    <a class="iconbtn" href="#">⚙</a><a class="iconbtn" href="#">↻</a><a class="iconbtn" href="#">+</a>
+  </div>
+  <table>
+    <thead><tr><th>Name</th><th>Owner</th><th>Status</th><th>Updated</th><th>Tasks</th><th></th></tr></thead>
+    <tbody>
+      <tr><td>Atlas redesign</td><td>M. Chen</td><td><span class="pill">Active</span></td><td>2h ago</td><td>14</td><td><a href="#">Open</a></td></tr>
+      <tr><td>Billing migration</td><td>R. Díaz</td><td><span class="pill">Blocked</span></td><td>1d ago</td><td>3</td><td><a href="#">Open</a></td></tr>
+      <tr><td>Q3 analytics</td><td>S. Park</td><td><span class="pill">Active</span></td><td>3d ago</td><td>27</td><td><a href="#">Open</a></td></tr>
+      <tr><td>Onboarding v2</td><td>T. Okafor</td><td><span class="pill">Review</span></td><td>5d ago</td><td>9</td><td><a href="#">Open</a></td></tr>
+      <tr><td>Mobile beta</td><td>J. Idris</td><td><span class="pill">Active</span></td><td>1w ago</td><td>41</td><td><a href="#">Open</a></td></tr>
+    </tbody>
+  </table>
+</body></html>

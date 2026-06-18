@@ -1,0 +1,21 @@
+{
+  "name": "tasteless",
+  "owner": {
+    "name": "Santiago Munoz",
+    "url": "https://github.com/ryuxik"
+  },
+  "metadata": {
+    "description": "The laws of UX, measured and auto-fixed. It doesn't have taste; it has citations.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "tasteless",
+      "source": "./plugins/tasteless",
+      "description": "Audit a rendered UI against the laws of UX (WCAG contrast, target size, line length, Fitts, Hick) and auto-fix the violations in a loop. Each fix cited.",
+      "version": "0.1.0",
+      "category": "design",
+      "keywords": ["design", "ux", "accessibility", "wcag", "audit", "css", "a11y"]
+    }
+  ]
+}

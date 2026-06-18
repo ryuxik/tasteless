@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settings — Lumen</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system, system-ui, sans-serif; background:#fff; color:#1a1a1a; }
+  .wrap { max-width:640px; margin:56px auto; padding:0 32px; }
+  h1 { font-size:26px; font-weight:600; margin-bottom:24px; }
+  .group { border:1px solid #e6e6e6; border-radius:12px; overflow:hidden; margin-bottom:28px; }
+  .row { display:flex; align-items:center; padding:18px 20px; }
+  .row + .row { border-top:1px solid #f0f0f0; }
+  .row .meta { margin-right:auto; }
+  .row .title { font-size:15px; font-weight:600; }
+  .row .help { font-size:14px; color:#595959; margin-top:3px; }
+  /* real-size toggle with adequate contrast + hit area */
+  .toggle { width:48px; height:28px; border:1px solid #767676; border-radius:999px; position:relative;
+            flex:none; background:#fff; display:inline-block; }
+  .toggle::after { content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#5a5a5a; }
+</style></head>
+<body>
+  <div class="wrap">
+    <h1>Settings</h1>
+    <div class="group">
+      <div class="row"><div class="meta"><div class="title">Email notifications</div>
+        <div class="help">Send a digest of activity to your inbox</div></div><a class="toggle" href="#" aria-label="Email notifications"></a></div>
+      <div class="row"><div class="meta"><div class="title">Desktop alerts</div>
+        <div class="help">Show a banner when you're mentioned</div></div><a class="toggle" href="#" aria-label="Desktop alerts"></a></div>
+      <div class="row"><div class="meta"><div class="title">Weekly summary</div>
+        <div class="help">A Monday recap of last week</div></div><a class="toggle" href="#" aria-label="Weekly summary"></a></div>
+    </div>
+    <div class="group">
+      <div class="row"><div class="meta"><div class="title">Two-factor auth</div>
+        <div class="help">Require a code at sign-in</div></div><a class="toggle" href="#" aria-label="Two-factor auth"></a></div>
+      <div class="row"><div class="meta"><div class="title">Public profile</div>
+        <div class="help">Let teammates see your activity</div></div><a class="toggle" href="#" aria-label="Public profile"></a></div>
+    </div>
+  </div>
+</body></html>
