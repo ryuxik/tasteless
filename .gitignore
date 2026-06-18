@@ -17,3 +17,6 @@ demo/artifacts/*.measure.json
 demo/artifacts/*.crawl.json
 demo/artifacts/heat_*.png
 *.webm
+
+# launch playbook stays local (don't ship the marketing copy in the public repo)
+LAUNCH.md

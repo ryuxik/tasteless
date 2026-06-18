@@ -95,8 +95,9 @@ audit → fix → re-measure loop for you (see the skill).
 **[`demo/showcase.html`](demo/showcase.html) is the whole thing on one page** —
 both videos, all six before/after receipts, the DINOv2 hierarchy loop, and the
 cited rules. It is itself audited by TASTELESS and passes: **0 GATE violations**.
-The demo that demos the tool survives the tool. A recorded scroll-through lives at
-`demo/artifacts/showcase_sizzle.mp4`.
+The demo that demos the tool survives the tool. The launch hero is a before/after
+still — `demo/artifacts/hero_landing.png` (33→0) and `hero_dashboard.png` (64→0) —
+and the loop clips are `fix_landing.mp4` and `hierarchy_clip.mp4`.
 
 `demo/` ships six deliberately-broken-but-good-looking surfaces and their fixed
 counterparts. `python demo/build_artifacts.py` renders each, audits it, stamps

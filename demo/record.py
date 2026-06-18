@@ -153,9 +153,8 @@ def main():
                               ART / "heat_hier_before.png", ART / "heat_hier_after.png",
                               "hierarchy_clip")
     print(f"  → {m2.name}, {g2.name}")
-    print("recording showcase sizzle (full scroll)…")
-    m3, g3 = record_scroll("showcase.html", "showcase_sizzle")
-    print(f"  → {m3.name}, {g3.name}")
+    # (record_scroll() exists for a full-page scroll-through, but the static
+    # before/after hero — tasteless.report.hero() — is the launch asset.)
 
 
 if __name__ == "__main__":
